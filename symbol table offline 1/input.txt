@@ -1,41 +1,19 @@
-7
-I a a
-S
-I h h
-S
-I o o
+1
+I asdf id
+I asdf id
+L asdf
 P A
-L o
-L a
-E
-S
-I foo FUNCTION
-E
-S
-I i VAR
+I gggg id
+I == op
+I >= op
 P A
-L foo
-L j
+S
+S
+S
+S
+E
 E
 E
 S
-I 5 NUMBER
-P A
-D j
-D i
-P A
 S
 E
-S
-I <= RELOP
-I == RELOP
-P A
-I <= RELOP
-I foo FUNCTION
-D ==
-P A
-E
-I t t
-I k k
-P C
-P A

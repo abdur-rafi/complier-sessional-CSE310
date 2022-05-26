@@ -45,11 +45,12 @@ class ScopeTable{
     int childCount;
     string id;
 
-    long long sdbmhash(string key){
-        long long r = 0;
+    unsigned long sdbmhash(string key){
+        unsigned long r = 0;
         int n = key.size();
         for(int i = 0; i < n; ++i){
             r = (r << 6) + (r << 16) + key[i] - r;
+//            cout << "r : " << r << "\n";
         }
         return r;
     }
@@ -228,6 +229,9 @@ public:
             cout << "ScopeTable with id " << curr->getId() << " removed\n";
             delete curr;
             curr = parent;
+        }
+        else{
+            cout << "No current scope\n";
         }
     }
 
