@@ -1,14 +1,42 @@
-#include <iostream>
+#ifndef SYMBOL_TABLE
+#define SYMBOL_TABLE 0
 #include <string>
 #include <fstream>
-
+#include <iostream>
 using namespace std;
+
+
+class functionInfo{
+
+public:
+
+    vector<string> types;
+    string returnType;
+    bool defined;
+
+    functionInfo(vector<string> t,string r){
+        types = t;
+        returnType = r;
+        defined = false;
+    }
+
+    functionInfo(vector<string> t,string r, bool def){
+        types = t;
+        returnType = r;
+        defined = def;
+    }
+    void print(){
+        cout << types.size() << " "   << returnType << "\n"; 
+    }
+};
 
 class SymbolInfo{
 
     string name, type;
+    string dataType;
+    bool isArray = false;
     SymbolInfo* next;
-
+    functionInfo *funcInfo;
 
 public:
 
@@ -16,25 +44,70 @@ public:
         name = n;
         type = t;
         this->next = next;
+        funcInfo = nullptr;
     }
 
     SymbolInfo(string n,string t): SymbolInfo(n, t, nullptr){}
+
+    SymbolInfo(string n,string t, string u, SymbolInfo* next,functionInfo* i): SymbolInfo(n, t, nullptr){
+        funcInfo = i;
+        dataType = u;
+    }
+
+    SymbolInfo(string n,string t, string u){
+        name = n;
+        type = t;
+        dataType = u;
+        next = nullptr;
+        funcInfo = nullptr;
+    }
+    SymbolInfo(string n,string t, string u, bool v){
+        name = n;
+        type = t;
+        dataType = u;
+        next = nullptr;
+        funcInfo = nullptr;
+        isArray = v;
+    }
+
 
     string getName(){
         return name;
     }
 
+    string getType(){
+        return type;
+    }
+
     SymbolInfo* getNext(){
         return next;
+    }
+    string getDataType(){
+        return dataType;
+    }
+
+    functionInfo* getFuncInfo(){
+        return funcInfo;
     }
 
     void setNext(SymbolInfo* next){
         this->next = next;
     }
 
-    void Print(){
-        cout << " < " << name << " : " << type << " > ";
+    bool isArray_(){
+        return isArray;
     }
+
+    void Print(ofstream &of){
+        of << "< " << name << " : " << type << " > "; 
+    }
+    // void Print(ofstream &of){
+    //     of << "< " << name << ", " << type << ", " << dataType << ", " << (int) isArray; 
+    //     if(funcInfo){
+    //         of << ", " << funcInfo->types.size() << ", " << funcInfo->returnType ;  
+    //     }
+    //     of << " > ";
+    // }
 };
 
 class ScopeTable{
@@ -50,7 +123,6 @@ class ScopeTable{
         int n = key.size();
         for(int i = 0; i < n; ++i){
             r = (r << 6) + (r << 16) + key[i] - r;
-//            cout << "r : " << r << "\n";
         }
         return r;
     }
@@ -105,7 +177,6 @@ public:
 
         while(curr){
             if(curr->getName() == key){
-                cout << "Found in ScopeTable# " << id <<" at position " << bucketIndex << ", " << c << "\n";
 
                 return curr;
             }
@@ -118,14 +189,13 @@ public:
 
     bool Insert(SymbolInfo *symbol){
         int c = 0;
-
         int bucketIndex = calcBucketIndex(symbol->getName());
+
+
         SymbolInfo* curr = buckets[bucketIndex];
         SymbolInfo* prev = nullptr;
         while(curr){
             if(curr->getName() == symbol->getName()){
-                symbol->Print();
-                cout << "already exists in current ScopeTable\n";
                 return false;
             }
             ++c;
@@ -139,7 +209,6 @@ public:
         else{
             prev->setNext(symbol);
         }
-        cout << "Inserted in ScopeTable# " << id <<" at position " << bucketIndex << ", " << c << "\n";
         return true;
 
     }
@@ -160,14 +229,12 @@ public:
                     prev->setNext(curr->getNext());
                 }
                 delete curr;
-                cout << "Deleted Entry " << bucketIndex << ", " << c << " from current ScopeTable\n";
                 return true;
             }
             ++c;
             prev = curr;
             curr = curr->getNext();
         }
-        cout << "Symbol not found in current ScopeTable\n";
 
         return false;
 
@@ -178,17 +245,22 @@ public:
         return parentScope;
     }
 
-    void Print(){
-        cout << "ScopeTable # " << id << "\n";
+    void Print(ofstream &of){
+        of << "ScopeTable # " << id << "\n";
         for(int i = 0; i < total_buckets; ++i){
-            cout << i << " --> " ;
             SymbolInfo* curr = buckets[i];
+            if(curr == nullptr){
+                continue;
+            }
+            of << i << " --> ";
             while(curr){
-                curr->Print();
+                curr->Print(of);
                 curr = curr->getNext();
             }
-            cout << "\n";
+            of << "\n";
         }
+        of << "\n";
+
     }
 
     string getId(){
@@ -198,15 +270,17 @@ public:
 
 class SymbolTable{
     ScopeTable *curr;
-    int topLevelCount = 0;
+    int topLevelCount = 1;
     int bucketSize;
     int defaultBucketSize = 10;
 
 public:
-    SymbolTable() : SymbolTable(defaultBucketSize){}
+    SymbolTable() : SymbolTable(10){
+
+    }
 
     SymbolTable(int bSize){
-        curr = nullptr;
+        curr = new ScopeTable(bSize, topLevelCount);
         bucketSize = bSize;
     }
 
@@ -214,7 +288,6 @@ public:
         if(!curr){
             topLevelCount++;
             curr = new ScopeTable(bucketSize,topLevelCount);
-
         }
         else
             curr = new ScopeTable(bucketSize,curr);
@@ -223,22 +296,31 @@ public:
 
     }
 
-    void ExitScope(){
+    void ExitScope(ofstream &of){
         if(curr){
             ScopeTable *parent = curr->getParentScope();
-            cout << "ScopeTable with id " << curr->getId() << " removed\n";
+            // curr->Print(of);
+            PrintAllScopeTable(of);
             delete curr;
             curr = parent;
         }
         else{
-            cout << "No current scope\n";
         }
     }
+
 
     bool Insert(SymbolInfo *symbol){
         if(!curr) EnterScope();
         return curr->Insert(symbol);
 
+    }
+
+    bool InsertInParent(SymbolInfo *symbol){
+        return curr->getParentScope()->Insert(symbol);
+    }
+
+    SymbolInfo* findInParent(string key){
+        return curr->getParentScope()->LookUp(key);
     }
 
     bool Remove(string key){
@@ -253,7 +335,6 @@ public:
             if(ret && ret->getName() == key) return ret;
             curr = curr->getParentScope();
         }
-        cout << "Not Found\n";
         return nullptr;
     }
 
@@ -265,109 +346,22 @@ public:
         }
     }
 
-    void PrintCurrentScopeTable(){
+    void PrintCurrentScopeTable(ofstream &of){
         if(curr){
-            curr->Print();
+            curr->Print(of);
         }
     }
 
-    void PrintAllScopeTable(){
+    void PrintAllScopeTable(ofstream &of){
         ScopeTable* curr = this->curr;
+        of << "\n";
         while(curr){
-            curr->Print();
-            cout << "\n\n";
+            curr->Print(of);
             curr = curr->getParentScope();
         }
+
     }
 
 };
 
-void Test(){
-    SymbolInfo* t = new SymbolInfo("a", "identifier");
-    ScopeTable* table = new ScopeTable(5, 1);
-    cout << (bool) table->LookUp(t->getName()) << "\n";
-    table->Insert(t);
-
-    table->Print();
-    cout << (bool) table->LookUp(t->getName()) << "\n";
-    cout << (bool) table->Insert(t);
-    cout << (bool) table->Delete(t->getName()) << "\n";
-
-    table->Print();
-}
-
-
-void takeInput(string inputFileName, string outputFileName){
-    ifstream inputFile;
-    inputFile.open(inputFileName);
-//    ofstream oFile;
-//    oFile.open(outputFileName);
-    if(inputFile.is_open()){
-        int n;
-        inputFile >> n;
-//        cout << n;
-
-        SymbolTable* symTable = new SymbolTable(n);
-
-        while(inputFile.peek() != EOF){
-            string command, name, type, nxt,symb;
-
-            inputFile >> command;
-            switch(command[0]){
-            case 'S':
-                cout << "s\n\nNew ScopeTable with id " << symTable->EnterScope() << " created\n\n";
-                break;
-            case 'I':
-                inputFile >> name >> type;
-                cout << "I " << name << " " << type << " \n\n";
-                symTable->Insert(new SymbolInfo(name, type));
-                cout << "\n";
-                break;
-
-            case 'P':
-                inputFile >> nxt;
-//                cout << nxt;
-                if(nxt == "A"){
-                    cout << "P A\n\n\n";
-                    symTable->PrintAllScopeTable();
-                    cout << "\n";
-                }
-                else if(nxt == "C"){
-                    cout << "P C\n\n\n";
-                    symTable->PrintCurrentScopeTable();
-                    cout << "\n";
-                }
-                break;
-            case 'L':
-                inputFile >> symb;
-                cout << "L " << symb << "\n\n";
-                symTable->LookUp(symb);
-                cout << "\n";
-                break;
-            case 'D':
-                inputFile >> symb;
-                cout << "D " << symb << "\n\n";
-                symTable->Remove(symb);
-                cout << "\n";
-                break;
-            case 'E':
-                cout << "E\n\n";
-                symTable->ExitScope();
-                cout << "\n";
-            }
-
-
-        }
-
-        inputFile.close();
-    }
-
-
-}
-
-int main(){
-    string fileName = "input.txt";
-    takeInput(fileName, "output.txt");
-//    Test();
-    return 0;
-}
+#endif

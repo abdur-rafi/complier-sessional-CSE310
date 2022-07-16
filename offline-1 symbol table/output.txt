@@ -1,0 +1,367 @@
+s
+
+New ScopeTable with id 1 created
+
+L c
+
+Not Found
+
+L a
+
+Not Found
+
+I d d 
+
+Inserted in ScopeTable# 1 at position 0, 0
+
+P A
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+s
+
+New ScopeTable with id 1.1 created
+
+D a
+
+Symbol not found in current ScopeTable
+
+I b a 
+
+Inserted in ScopeTable# 1.1 at position 0, 0
+
+s
+
+New ScopeTable with id 1.1.1 created
+
+P A
+
+
+ScopeTable # 1.1.1
+0 --> 
+1 --> 
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+D a
+
+Symbol not found in current ScopeTable
+
+P A
+
+
+ScopeTable # 1.1.1
+0 --> 
+1 --> 
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+I a d 
+
+Inserted in ScopeTable# 1.1.1 at position 1, 0
+
+I a c 
+
+ < a : c > already exists in current ScopeTable
+
+s
+
+New ScopeTable with id 1.1.1.1 created
+
+I b a 
+
+Inserted in ScopeTable# 1.1.1.1 at position 0, 0
+
+P A
+
+
+ScopeTable # 1.1.1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1.1.1
+0 --> 
+1 -->  < a : d > 
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+I c b 
+
+Inserted in ScopeTable# 1.1.1.1 at position 1, 0
+
+L b
+
+Found in ScopeTable# 1.1.1.1 at position 0, 0
+
+P A
+
+
+ScopeTable # 1.1.1.1
+0 -->  < b : a > 
+1 -->  < c : b > 
+
+
+ScopeTable # 1.1.1
+0 --> 
+1 -->  < a : d > 
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+D d
+
+Symbol not found in current ScopeTable
+
+E
+
+ScopeTable with id 1.1.1.1 removed
+
+D c
+
+Symbol not found in current ScopeTable
+
+P A
+
+
+ScopeTable # 1.1.1
+0 --> 
+1 -->  < a : d > 
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+I d c 
+
+Inserted in ScopeTable# 1.1.1 at position 0, 0
+
+D d
+
+Deleted Entry 0, 0 from current ScopeTable
+
+L c
+
+Not Found
+
+P A
+
+
+ScopeTable # 1.1.1
+0 --> 
+1 -->  < a : d > 
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+I c a 
+
+Inserted in ScopeTable# 1.1.1 at position 1, 1
+
+I c d 
+
+ < c : d > already exists in current ScopeTable
+
+P A
+
+
+ScopeTable # 1.1.1
+0 --> 
+1 -->  < a : d >  < c : a > 
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+E
+
+ScopeTable with id 1.1.1 removed
+
+D d
+
+Symbol not found in current ScopeTable
+
+I a d 
+
+Inserted in ScopeTable# 1.1 at position 1, 0
+
+s
+
+New ScopeTable with id 1.1.2 created
+
+I a a 
+
+Inserted in ScopeTable# 1.1.2 at position 1, 0
+
+I d c 
+
+Inserted in ScopeTable# 1.1.2 at position 0, 0
+
+D b
+
+Symbol not found in current ScopeTable
+
+L d
+
+Found in ScopeTable# 1.1.2 at position 0, 0
+
+E
+
+ScopeTable with id 1.1.2 removed
+
+P A
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 -->  < a : d > 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+P A
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 -->  < a : d > 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+D a
+
+Deleted Entry 1, 0 from current ScopeTable
+
+I d c 
+
+Inserted in ScopeTable# 1.1 at position 0, 1
+
+D c
+
+Symbol not found in current ScopeTable
+
+D d
+
+Deleted Entry 0, 1 from current ScopeTable
+
+D d
+
+Symbol not found in current ScopeTable
+
+s
+
+New ScopeTable with id 1.1.3 created
+
+D d
+
+Symbol not found in current ScopeTable
+
+I b d 
+
+Inserted in ScopeTable# 1.1.3 at position 0, 0
+
+I d a 
+
+Inserted in ScopeTable# 1.1.3 at position 0, 1
+
+P A
+
+
+ScopeTable # 1.1.3
+0 -->  < b : d >  < d : a > 
+1 --> 
+
+
+ScopeTable # 1.1
+0 -->  < b : a > 
+1 --> 
+
+
+ScopeTable # 1
+0 -->  < d : d > 
+1 --> 
+
+
+
+s
+
+New ScopeTable with id 1.1.3.1 created
+
